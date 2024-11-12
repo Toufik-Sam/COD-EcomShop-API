@@ -15,8 +15,7 @@ This project is a **Cash on Delivery (COD) E-commerce Web API** built using **AS
 ## Technologies Used
 - **ASP.NET Core Web API** for backend development.
 - **SQL Server** for database management.
-- **JWT Authentication** for secure user login and access control.
-- 
+ 
 ## Endpoints
 The API endpoints are fully documented using **Swagger**. You can explore and interact with them through the Swagger UI once the application is running.
 
