@@ -8,7 +8,7 @@ This project is a **Cash on Delivery (COD) E-commerce Web API** built using **AS
 - **Product Management**: List products, manage product details.
 - **Order Management**: Place, track, and manage orders status.
 - **Carts Management**: Add , Delete Items.
-- **Employess Management**: Define Roles for Employess like Order Manger,Stock Manager
+- **Employees Management**: Define Roles for Employess like Order Manger,Stock Manager
 - **Customer Management**: Handle Customer Data and Address, Orders ect
 - **Order Status**: Update and track COD Order status for Customers.
 
