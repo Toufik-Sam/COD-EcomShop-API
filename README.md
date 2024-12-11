@@ -11,6 +11,7 @@ This project is a **Cash on Delivery (COD) E-commerce Web API** built using **AS
 - **Employees Management**: Define Roles for Employess like Order Manger,Stock Manager
 - **Customer Management**: Handle Customer Data and Address, Orders ect
 - **Order Status**: Update and track COD Order status for Customers.
+- **Sales**: Manage Sales and Aanalyse Customer behavior and Products Insights.
 
 ## Technologies Used
 - **ASP.NET Core Web API** for backend development.
