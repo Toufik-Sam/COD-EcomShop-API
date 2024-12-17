@@ -21,6 +21,14 @@ using EcomDataAccess.OrdersData.OrderItems;
 using EcomBusinessLayer.Cards;
 using EcomDataAccess.CartsData;
 using EcomDataAccess.CartsData.CartsItemsData;
+using EcomDataAccess.SalesData;
+using EcomBusinessLayer.Sales;
+using EcomDataAccess.SalesData.SalesManagement;
+using EcomBusinessLayer.Sales.SalesDetails;
+using EcomDataAccess.SalesData.SalesManagement.CustomerBehavior;
+using EcomBusinessLayer.Sales.SalesDetails.CustomerBehavior;
+using EcomDataAccess.SalesData.SalesManagement.ProductInsight;
+using EcomBusinessLayer.Sales.SalesDetails.ProductInsight;
 
 namespace EcommerceAppAPI.StartupConfig
 {
@@ -84,6 +92,14 @@ namespace EcommerceAppAPI.StartupConfig
             builder.Services.AddScoped<ICartData, clsCartData>();
             builder.Services.AddScoped<ICartItemData, clsCartItemData>();
             builder.Services.AddScoped<ICart, clsCart>();
+            builder.Services.AddScoped<ISaleData, clsSaleData>();
+            builder.Services.AddScoped<ISale, clsSale>();
+            builder.Services.AddScoped<ISalesManagementData,clsSalesManagementData>();
+            builder.Services.AddScoped<ISaleManagement, clsSaleManagement>();
+            builder.Services.AddScoped<ICustomerBehaviorData, clsCustomerBehaviorData>();
+            builder.Services.AddScoped<ICustomerBehavior, clsCustomerBehavior>();
+            builder.Services.AddScoped<IProductInsightData, clsProductInsightData>();
+            builder.Services.AddScoped<IProductInsight, clsProductInsight>();
         }
         public static void AddAuthServices(this WebApplicationBuilder builder)
         { 

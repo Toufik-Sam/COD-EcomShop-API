@@ -1,14 +1,6 @@
 ﻿using EcomDataAccess.ProductsData;
 using EcomDataAccess.ProductsData.Galleries;
 using EcomDataAccess.ProductsData.ProductsCategories;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EcomBusinessLayer.Products
 {
     public class clsProduct : IProduct
@@ -26,7 +18,7 @@ namespace EcomBusinessLayer.Products
         public async Task<ProductDTO> AddNewProduct(ProductDTO product)
         {
             int newID = await _productData.AddProduct(product);
-            return newID > 0 ? new ProductDTO(newID, product.EmployeeID, product.ProductName, product.ProductDescription,
+            return newID > 0 ? new ProductDTO(newID, product.EmployeeID,product.SupplierID, product.ProductName, product.ProductDescription,
                 product.Price, product.Quantity, product.Created_At) : null!;
         }
         public async Task<ProductDTO> Find(int ProductID)
