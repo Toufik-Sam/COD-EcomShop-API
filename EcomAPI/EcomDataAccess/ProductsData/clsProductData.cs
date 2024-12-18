@@ -108,11 +108,10 @@ namespace EcomDataAccess.ProductsData
                                  reader.GetInt32(reader.GetOrdinal("Quantity")),
                                  reader.GetDateTime(reader.GetOrdinal("Created_At"))));
                         }
-                        return ProductsList;
                     }
                 }
             }
-            return null;
+            return ProductsList;
         }
         public async Task<bool> DeleteProduct(int ProductID)
         {

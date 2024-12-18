@@ -254,35 +254,137 @@ namespace EcommerceAppAPI.Controllers
         }
 
         // PUT api/<OrdersController>/5
-        [HttpPut("{id}/UpdateOrder")]
-        public async Task<IActionResult> Put(int id, OrderDTO UpdatedOrderDTO)
+        [HttpPut("{id}/ShipOrder")]
+        public async Task<IActionResult> ShipOrder(int id)
         {
             if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
               && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
               (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
-            _logger.LogInformation("PUT: api/{id}/UpdateOrder", id);
-            bool IsOrderExist = await _order.IsOrderExist(UpdatedOrderDTO.OrderID);
-            bool IsCustomerExist = await _customer.IsCustomerExist(UpdatedOrderDTO.OrderID);
-            if (!IsOrderExist && !IsCustomerExist && UpdatedOrderDTO.OrderStatusID < 1)
+            _logger.LogInformation("PUT: api/{id}/ShipOrder", id);
+            bool IsOrderExist = await _order.IsOrderExist(id);
+            if (!IsOrderExist)
                 return BadRequest("Invalid Data!");
             try
             {
-                var order = await _order.Find(id);
-                if (order == null)
-                    return NotFound($"Order With ID {id} was not found");
-                order.CustomerID = UpdatedOrderDTO.CustomerID;
-                order.OrderStatusID = UpdatedOrderDTO.OrderStatusID;
-                bool flag = await _order.UpdateOrder(order);
+                bool flag = await _order.ShipOrder(id);
                 if (flag)
-                    return Ok(order);
+                    return Ok("Order Shipped Successfully!");
                 else
                     return BadRequest();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "The PUT call to api/{id}/UpdateOrder failed", id);
+                _logger.LogError(ex, "The PUT call to api/{id}/ShipOrder failed", id);
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("{id}/DeliverOrder")]
+        public async Task<IActionResult> DeliverOrder(int id)
+        {
+            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
+              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+                return Unauthorized();
+
+            _logger.LogInformation("PUT: api/{id}/DeliverOrder", id);
+            bool IsOrderExist = await _order.IsOrderExist(id);
+            if (!IsOrderExist)
+                return BadRequest("Invalid Data!");
+            try
+            {
+                bool flag = await _order.DeliverOrder(id);
+                if (flag)
+                    return Ok("Order Delivered Successfully!");
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "The PUT call to api/{id}/DeliverOrder failed", id);
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("{id}/ConfirmOrder")]
+        public async Task<IActionResult> ConfirmOrder(int id)
+        {
+            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
+              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+                return Unauthorized();
+
+            _logger.LogInformation("PUT: api/{id}/ConfirmOrder", id);
+            bool IsOrderExist = await _order.IsOrderExist(id);
+            if (!IsOrderExist)
+                return BadRequest("Invalid Data!");
+            try
+            {
+                bool flag = await _order.ConfirmOrder(id);
+                if (flag)
+                    return Ok("Order Confirmed Successfully!");
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "The PUT call to api/{id}/ConfirmOrder failed", id);
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("{id}/CancelOrder")]
+        public async Task<IActionResult> CancelOrder(int id)
+        {
+            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
+              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+                return Unauthorized();
+
+            _logger.LogInformation("PUT: api/{id}/CancelOrder", id);
+            bool IsOrderExist = await _order.IsOrderExist(id);
+            if (!IsOrderExist)
+                return BadRequest("Invalid Data!");
+            try
+            {
+                bool flag = await _order.CancelOrder(id);
+                if (flag)
+                    return Ok("Order Canceled Successfully!");
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "The PUT call to api/{id}/CancelOrder failed", id);
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("{id}/ReturnOrder")]
+        public async Task<IActionResult> ReturnOrder(int id)
+        {
+            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
+              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+                return Unauthorized();
+
+            _logger.LogInformation("PUT: api/{id}/ReturnOrder", id);
+            bool IsOrderExist = await _order.IsOrderExist(id);
+            if (!IsOrderExist)
+                return BadRequest("Invalid Data!");
+            try
+            {
+                bool flag = await _order.ReturnOrder(id);
+                if (flag)
+                    return Ok("Order Return Successfully!");
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "The PUT call to api/{id}/ReturnOrder failed", id);
                 return BadRequest();
             }
         }
