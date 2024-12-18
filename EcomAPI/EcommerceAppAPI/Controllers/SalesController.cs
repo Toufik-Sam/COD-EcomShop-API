@@ -95,8 +95,7 @@ namespace EcommerceAppAPI.Controllers
         public async Task<ActionResult<SaleDTO>>AddNewSale(SaleDTO newSale)
         {
             _logger.LogInformation(message: "POST: api/AddNewSale");
-            bool flag = await _order.IsOrderExist(newSale.OrderID);
-            if (newSale.Amount<=0 || !flag)
+            if (newSale.Amount<=0)
                 return BadRequest("Invalid Data!");
             try
             {
@@ -116,6 +115,7 @@ namespace EcommerceAppAPI.Controllers
         [HttpPut("{id}/UpdateSale")]
         public async Task<IActionResult>UpdateSale(int id, SaleDTO UpdatedSale)
         {
+            _logger.LogInformation(message: "POST: api/UpdateSale");
             bool flag = await _order.IsOrderExist(UpdatedSale.OrderID);
             if (id < 1 || UpdatedSale.Amount<=0 || !flag)
                 return BadRequest("Invalid Data");

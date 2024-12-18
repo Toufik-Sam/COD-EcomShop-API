@@ -1,11 +1,5 @@
-﻿using EcomDataAccess.CustomersData;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EcomDataAccess.OrdersData
 {
@@ -40,19 +34,76 @@ namespace EcomDataAccess.OrdersData
             }
             return NewOrderID;
         }
-        public async Task<bool> UpdateOrder(OrderDTO orderDTO)
+        public async Task<bool>ShipOrder(int OrderID)
         {
             int rowsAffected = 0;
-            using (var connection = new SqlConnection(_settings.ConnectionString))
+            using(SqlConnection conn=new SqlConnection(_settings.ConnectionString))
             {
-                using (var command = new SqlCommand("dbo.spUpdateOrder", connection))
+                using(SqlCommand command=new SqlCommand("dbo.spShipOrder",conn))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@OrderID", orderDTO.OrderID);
-                    command.Parameters.AddWithValue("@CustomerID", orderDTO.CustomerID);
-                    command.Parameters.AddWithValue("@OrderStatusID", orderDTO.OrderStatusID);
-                    command.Parameters.AddWithValue("@CreatedAt", orderDTO.CreatedAt);
-                    connection.Open();
+                    command.Parameters.AddWithValue("@OrderID", OrderID);
+                    conn.Open();
+                    rowsAffected = await command.ExecuteNonQueryAsync();
+                }
+            }
+            return rowsAffected > 0;
+        }
+        public async Task<bool>DeliverOrder(int OrderID)
+        {
+            int rowsAffected = 0;
+            using (SqlConnection conn = new SqlConnection(_settings.ConnectionString))
+            {
+                using (SqlCommand command = new SqlCommand("dbo.spDeliverOrder", conn))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@OrderID", OrderID);
+                    conn.Open();
+                    rowsAffected = await command.ExecuteNonQueryAsync();
+                }
+            }
+            return rowsAffected > 0;
+        }
+        public async Task<bool>ConfirmOrder(int OrderID)
+        {
+            int rowsAffected = 0;
+            using (SqlConnection conn = new SqlConnection(_settings.ConnectionString))
+            {
+                using (SqlCommand command = new SqlCommand("dbo.spConfirmOrder", conn))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@OrderID", OrderID);
+                    conn.Open();
+                    rowsAffected = await command.ExecuteNonQueryAsync();
+                }
+            }
+            return rowsAffected > 0;
+        }
+        public async Task<bool>CancelOrder(int OrderID)
+        {
+            int rowsAffected = 0;
+            using (SqlConnection conn = new SqlConnection(_settings.ConnectionString))
+            {
+                using (SqlCommand command = new SqlCommand("dbo.spCancelOrder", conn))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@OrderID", OrderID);
+                    conn.Open();
+                    rowsAffected = await command.ExecuteNonQueryAsync();
+                }
+            }
+            return rowsAffected > 0;
+        }
+        public async Task<bool>ReturnOrder(int OrderID)
+        {
+            int rowsAffected = 0;
+            using (SqlConnection conn = new SqlConnection(_settings.ConnectionString))
+            {
+                using (SqlCommand command = new SqlCommand("dbo.spReturnOrder", conn))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@OrderID", OrderID);
+                    conn.Open();
                     rowsAffected = await command.ExecuteNonQueryAsync();
                 }
             }

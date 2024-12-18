@@ -15,12 +15,16 @@ namespace EcomBusinessLayer.Orders
         Task<IList<OrderStatusDTO>> GetAllOrderSatatuses();
         Task<OrderStatusDTO> GetOrderStatusByID(int OrderStatusID);
         Task<bool> IsOrderExist(int OrderID);
-        Task<bool> UpdateOrder(OrderDTO orderDTO);
         Task<bool> UpdateOrderStatus(OrderStatusDTO orderStatusID);
         Task<OrderItemDTO> AddNewOrderItem(OrderItemDTO orderItemDTO);
         Task<bool> UpdateOrderItem(OrderItemDTO orderItemDTO);
         Task<IList<OrderItemDTO>> GetAllOrderItems(int OrderID);
         Task<bool> DeleteOrderItem(int OrderItemID);
         Task<OrderItemDTO> GetOrderItemByID(int OrderItemID);
+        Task<bool> ShipOrder(int OrderID);
+        Task<bool> DeliverOrder(int OrderID);
+        Task<bool> ConfirmOrder(int OrderID);
+        Task<bool> CancelOrder(int OrderID);
+        Task<bool> ReturnOrder(int OrderID);
     }
 }

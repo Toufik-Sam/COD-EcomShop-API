@@ -1,12 +1,6 @@
 ﻿using EcomDataAccess.OrdersData;
 using EcomDataAccess.OrdersData.OrderItems;
 using EcomDataAccess.OrdersData.OrderStatus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EcomBusinessLayer.Orders
 {
     public class clsOrder : IOrder
@@ -26,11 +20,6 @@ namespace EcomBusinessLayer.Orders
             int newID = await _orderData.AddNewOrder(orderDTO);
             return newID > 0 ? new OrderDTO(newID, orderDTO.CustomerID,
                 orderDTO.OrderStatusID, orderDTO.CreatedAt) : null!;
-        }
-        public async Task<bool> UpdateOrder(OrderDTO orderDTO)
-        {
-            bool flag = await _orderData.UpdateOrder(orderDTO);
-            return flag;
         }
         public async Task<IList<OrderDTO>> GetAllCustomerOrders(int CustomerID)
         {
@@ -101,6 +90,31 @@ namespace EcomBusinessLayer.Orders
         public async Task<bool>DeleteOrderItem(int OrderItem)
         {
             bool flag = await _orderItemsData.DeleteOrderItem(OrderItem);
+            return flag;
+        }
+        public async Task<bool>ShipOrder(int OrderID)
+        {
+            bool flag = await _orderData.ShipOrder(OrderID);
+            return flag;
+        }
+        public async Task<bool>DeliverOrder(int OrderID)
+        {
+            bool flag = await _orderData.DeliverOrder(OrderID);
+            return flag;
+        }
+        public async Task<bool>ConfirmOrder(int OrderID)
+        {
+            bool flag = await _orderData.ConfirmOrder(OrderID);
+            return flag;
+        }
+        public async Task<bool>CancelOrder(int OrderID)
+        {
+            bool flag = await _orderData.CancelOrder(OrderID);
+            return flag;
+        }
+        public async Task<bool> ReturnOrder(int OrderID)
+        {
+            bool flag = await _orderData.ReturnOrder(OrderID);
             return flag;
         }
     }

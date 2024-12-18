@@ -1,14 +1,6 @@
 ﻿using EcomDataAccess.ProductsData;
 using EcomDataAccess.ProductsData.Galleries;
 using EcomDataAccess.ProductsData.ProductsCategories;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EcomBusinessLayer.Products
 {
     public class clsProduct : IProduct
