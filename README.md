@@ -30,7 +30,7 @@ This interactive interface will provide a detailed list of all available endpoin
 - Ensure to update the database connection string in visual studio `User secrets`.
 - JWT is used for authentication and authorization.
 - This project focuses on the backend functionality, and the front-end can be integrated separately.
-
+![image alt](https://github.com/Toufik-Sam/COD-EcomShop-API/blob/Master/Capture1.PNG)
 ## License
 [MIT License](LICENSE)
 
