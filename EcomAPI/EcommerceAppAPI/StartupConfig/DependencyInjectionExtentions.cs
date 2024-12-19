@@ -29,6 +29,10 @@ using EcomDataAccess.SalesData.SalesManagement.CustomerBehavior;
 using EcomBusinessLayer.Sales.SalesDetails.CustomerBehavior;
 using EcomDataAccess.SalesData.SalesManagement.ProductInsight;
 using EcomBusinessLayer.Sales.SalesDetails.ProductInsight;
+using EcomDataAccess.SupplierData;
+using EcomBusinessLayer.Suppliers;
+using EcomDataAccess.SupplierData.ProductSupplierData;
+using EcomBusinessLayer.Suppliers.ProductSuppliers;
 
 namespace EcommerceAppAPI.StartupConfig
 {
@@ -100,6 +104,10 @@ namespace EcommerceAppAPI.StartupConfig
             builder.Services.AddScoped<ICustomerBehavior, clsCustomerBehavior>();
             builder.Services.AddScoped<IProductInsightData, clsProductInsightData>();
             builder.Services.AddScoped<IProductInsight, clsProductInsight>();
+            builder.Services.AddScoped<ISupplierData, clsSupplierData>();
+            builder.Services.AddScoped<ISupplier, clsSupplier>();
+            builder.Services.AddScoped<IProductSupplierData, clsProductSupplierData>();
+            builder.Services.AddScoped<IProductSupplier, clsProductSupplier>();
         }
         public static void AddAuthServices(this WebApplicationBuilder builder)
         { 
