@@ -86,6 +86,7 @@ namespace EcomDataAccess.SupplierData
             {
                 using (var command = new SqlCommand("dbo.spGetAllSuppliers", connection))
                 {
+                    connection.Open();
                     using (var reader = await command.ExecuteReaderAsync())
                     {
                         while (reader.Read())
@@ -135,6 +136,5 @@ namespace EcomDataAccess.SupplierData
             }
             return Found;
         }
-
     }
 }
