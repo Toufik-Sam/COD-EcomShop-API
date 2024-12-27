@@ -11,7 +11,7 @@ namespace EcommerceAppAPI.Models
         public string Phone { set; get; }
         public Permissions Permission { set; get; }
         public string Token { set; get; }
-        public clsUser(int UserID,string LastName,string FirstName,string Email,string Phone, Permissions Permission,string Token)
+        public clsUser(int UserID, string LastName, string FirstName, string Email, string Phone, Permissions Permission, string Token)
         {
             this.UserID = UserID;
             this.LastName = LastName;

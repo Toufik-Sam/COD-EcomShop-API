@@ -13,11 +13,13 @@ namespace EcommerceAppAPI.Controllers
     {
         private readonly ICategory _category;
         private readonly ILogger<CategoriesController> _logger;
+        private readonly IUserService _global;
 
-        public CategoriesController(ICategory category,ILogger<CategoriesController>logger)
+        public CategoriesController(ICategory category,ILogger<CategoriesController>logger,IUserService global)
         {
             this._category = category;
             this._logger = logger;
+            this._global = global;
         }
         // GET: api/<CategoriesController>
         [HttpGet("AllCategories")]
@@ -25,8 +27,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<CategoryDTO>>> GetAllCategories()
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/AllCategories");
             try
@@ -48,8 +50,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CategoryDTO>> GetCategoryByID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/{id}/CategoryByID", id);
             if (id < 1)
@@ -74,8 +76,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CategoryDTO>> Post(CategoryDTO category)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation(message: "POST: api/AddCategory");
             if (!ValidateInput(category))
@@ -101,8 +103,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put(int id,CategoryDTO UpdatedCategory)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
 
             _logger.LogInformation("PUT: api/{id}", id);
@@ -136,8 +138,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
 
             _logger.LogInformation("DELETE: api/{id}/DeleteCategory", id);

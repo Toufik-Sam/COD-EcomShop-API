@@ -1,7 +1,16 @@
-﻿namespace EcommerceAppAPI.Models
+﻿using EcomDataAccess;
+namespace EcommerceAppAPI.Models
 {
-    public class Global
+    public class Global:IUserService
     {
-        public static clsUser User;
+        private clsUser _user = new clsUser(-1, "", "", "", "", Permissions.Addmin, "");
+        public clsUser GetUser()
+        {
+            return _user;
+        }
+        public void SetUser(clsUser user)
+        {
+            _user = user;
+        }
     }
 }

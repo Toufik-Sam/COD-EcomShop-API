@@ -6,6 +6,7 @@ using EcomDataAccess.CartsData;
 using Microsoft.AspNetCore.Mvc;
 using EcomDataAccess;
 using EcommerceAppAPI.Models;
+using System.Security;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,13 +20,15 @@ namespace EcommerceAppAPI.Controllers
         private readonly ICustomer _customer;
         private readonly ICart _cart;
         private readonly ILogger<CartsController> _logger;
+        private readonly IUserService _global;
 
-        public CartsController(IProduct product, ICustomer customer, ICart cart, ILogger<CartsController> logger)
+        public CartsController(IProduct product, ICustomer customer, ICart cart, ILogger<CartsController> logger,IUserService global)
         {
             this._product = product;
             this._customer = customer;
             this._cart = cart;
             this._logger = logger;
+            this._global = global;
             this._customer = customer;
         }
         // GET: api/<CardsController>
@@ -34,7 +37,7 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CartDTO>> GetAllCarts()
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/AllCarts");
             try
@@ -54,8 +57,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<CartItemDTO>>> GetAllCartItems(int CardID)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/AllCartItems");
             try
@@ -76,8 +79,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CartDTO>> GetCartByID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/{id}/CartByID", id);
             if (id < 1)
@@ -101,8 +104,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CartItemDTO>> GetCartItemByID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-               (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+               (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/{id}/CartItemByID", id);
             if (id < 1)
@@ -127,8 +130,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CartDTO>> Post(CartDTO cartDTO)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
             _logger.LogInformation(message: "POST: api/AddNewCart");
             var IsCustomerExist = await _customer.IsCustomerExist(cartDTO.CustomerID);
@@ -154,8 +157,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CartItemDTO>> Post(CartItemDTO cartItemDTO)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-                (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+                (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
             _logger.LogInformation(message: "POST: api/AddNewCartItem");
             var IsCartExist = await _cart.IsCartExist(cartItemDTO.CartID);
@@ -181,8 +184,8 @@ namespace EcommerceAppAPI.Controllers
         [HttpPut("{id}/UpdateCart")]
         public async Task<IActionResult> Put(int id, CartDTO UpdatedCart)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-               (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+               (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
             _logger.LogInformation("PUT: api/{id}/UpdateCart", id);
             var IsCustomerExist = await _customer.IsCustomerExist(UpdatedCart.CustomerID);
@@ -210,8 +213,8 @@ namespace EcommerceAppAPI.Controllers
         [HttpPut("{id}/UpdateCartItem")]
         public async Task<IActionResult> Put(int id, CartItemDTO UpdatedCartItem)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-               (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+               (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
             _logger.LogInformation("PUT: api/{id}/UpdateCartItem", id);
             var IsCartExist = await _cart.IsCartExist(UpdatedCartItem.CartID);
@@ -245,8 +248,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteCart(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-               (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+               (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
             _logger.LogInformation("DELETE: api/{id}/DeleteCart", id);
             if (id < 1)
@@ -271,8 +274,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteCartItem(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-                 (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+                 (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
             _logger.LogInformation("DELETE: api/{id}/DeleteCartItem", id);
             if (id < 1)

@@ -21,11 +21,14 @@ namespace EcommerceAppAPI.Controllers
         private readonly IConfiguration _config;
         private readonly ICustomer _customer;
         private readonly IEmployee _employee;
-        public AuthenticationController(IConfiguration config,ICustomer customer,IEmployee employee)
+        private readonly IUserService _global;
+
+        public AuthenticationController(IConfiguration config, ICustomer customer, IEmployee employee, IUserService global)
         {
             this._config = config;
             this._customer = customer;
             this._employee = employee;
+            this._global = global;
         }
         public record AuthenticationData(string?Email,string?PassWord);
         //api/Authentication/tokren
@@ -35,12 +38,12 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<clsUser>> Authenticate([FromBody]AuthenticationData Data)
         {
-            Global.User = await ValidateCredentials(Data);
-            if (Global.User == null)
+            _global.SetUser(await ValidateCredentials(Data));
+            if (_global.GetUser() == null)
                 return Unauthorized();
-            var token = GenerateToken(Global.User);
-            Global.User.Token = token;
-            return Ok(Global.User);
+            var token = GenerateToken(_global.GetUser());
+            _global.GetUser().Token = token;
+            return Ok(_global.GetUser());
         }
         private  string GenerateToken(clsUser User)
         {
