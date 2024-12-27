@@ -17,11 +17,13 @@ namespace EcommerceAppAPI.Controllers
     {
         private readonly ICustomer _customer;
         private readonly ILogger<CustomersController> _logger;
+        private readonly IUserService _global;
 
-        public CustomersController(ICustomer customer,ILogger<CustomersController>logger)
+        public CustomersController(ICustomer customer, ILogger<CustomersController> logger, IUserService global)
         {
             this._customer = customer;
             this._logger = logger;
+            this._global = global;
         }
         // GET: api/<CustomersController>
         [HttpGet("AllCustomers")]
@@ -29,7 +31,7 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<CustomerDTO>>> GetAllCustomers()
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/AllCustomers");
             try
@@ -51,8 +53,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerDTO>> GetCutomerByID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-               (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+               (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation(message: "GET: api/{id}/CustomerByID", id);
@@ -78,8 +80,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerAddressDTO>> GetCutomerAddressByID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation(message: "GET: api/{id}/CustomerAddressID", id);
@@ -105,7 +107,7 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<CustomerAddressDTO>>> GetCutomerAddresses(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin)
                 return Unauthorized();
 
             _logger.LogInformation(message: "GET: api/{id}/AllCustomerAddresses", id);
@@ -156,8 +158,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerAddressDTO>> Post(CustomerAddressDTO newCustomerAddress)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation(message: "POST: api/AddCustomerAddress");
@@ -186,8 +188,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put(int id,CustomerDTO Updatedcustomer)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("PUT: api/{id}/UpdateCustomer", id);
@@ -221,8 +223,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put(int id,string CurrentPassword,string NewPassword)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("PUT: api/{id}/UpdatCustomerPassword", id);
@@ -252,8 +254,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put(int id, CustomerAddressDTO UpdatCustomerAddress)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("PUT: api/{id}/UpdatCustomerAddress", id);
@@ -293,8 +295,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("DELETE: api/{id}/DeleteCustomer", id);
@@ -320,8 +322,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteCustomerAddress(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-                (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+                (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("DELETE: api/{id}/DeleteCustomerAddress", id);

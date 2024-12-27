@@ -33,6 +33,7 @@ using EcomDataAccess.SupplierData;
 using EcomBusinessLayer.Suppliers;
 using EcomDataAccess.SupplierData.ProductSupplierData;
 using EcomBusinessLayer.Suppliers.ProductSuppliers;
+using EcommerceAppAPI.Models;
 
 namespace EcommerceAppAPI.StartupConfig
 {
@@ -108,6 +109,7 @@ namespace EcommerceAppAPI.StartupConfig
             builder.Services.AddScoped<ISupplier, clsSupplier>();
             builder.Services.AddScoped<IProductSupplierData, clsProductSupplierData>();
             builder.Services.AddScoped<IProductSupplier, clsProductSupplier>();
+            builder.Services.AddScoped<IUserService, Global>();
         }
         public static void AddAuthServices(this WebApplicationBuilder builder)
         { 

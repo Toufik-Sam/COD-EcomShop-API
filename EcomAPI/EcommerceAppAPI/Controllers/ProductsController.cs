@@ -1,8 +1,6 @@
-﻿using EcomBusinessLayer.Customers;
-using EcomBusinessLayer.Products;
+﻿using EcomBusinessLayer.Products;
 using EcomBusinessLayer.Products.Categories;
 using EcomDataAccess;
-using EcomDataAccess.CustomersData;
 using EcomDataAccess.ProductsData;
 using EcomDataAccess.ProductsData.Galleries;
 using EcomDataAccess.ProductsData.ProductsCategories;
@@ -18,12 +16,14 @@ namespace EcommerceAppAPI.Controllers
         private readonly IProduct _product;
         private readonly ICategory _category;
         private readonly ILogger<ProductsController> _logger;
+        private readonly IUserService _global;
 
-        public ProductsController(IProduct product,ICategory category,ILogger<ProductsController>logger)
+        public ProductsController(IProduct product,ICategory category,ILogger<ProductsController>logger,IUserService global)
         {
             this._product = product;
             this._category = category;
             this._logger = logger;
+            this._global = global;
         }
         // GET: api/<ProductsController>
         [HttpGet("AllProducts")]
@@ -31,8 +31,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<ProductDTO>>> GetAllProducts()
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-                && (Global.User.Permission & Permissions.StockManager)!=Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+                && (_global.GetUser().Permission & Permissions.StockManager)!=Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/AllProducts");
             try
@@ -54,8 +54,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ProductDTO>> GetProductByID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-                 && (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+                 && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/{id}/ProductByID", id);
             if (id < 1)
@@ -80,8 +80,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<ProductCategoryDTO>>> GetAllProductCategories(int ProductID)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-               && (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/AllProductCategories");
             try
@@ -102,8 +102,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<GalleryDTO>> GetProductGalleryByID(int GalleryID)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-                && (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+                && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/{id}/ProductGalleryByID", GalleryID);
             if (GalleryID < 1)
@@ -127,8 +127,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<ProductDTO>>> GetAllProductGalleries(int ProductID)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-                && (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+                && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/AllProductGalleries");
             try
@@ -149,8 +149,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ProductDTO>> Post(ProductDTO product)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-                && (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+                && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation(message: "POST: api/AddProduct");
             if (!ValidateInput(product))
@@ -176,8 +176,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ProductDTO>> Post(ProductCategoryDTO ProductCategory)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-                && (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+                && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation(message: "POST: api/AddProductCategories");
             bool IsProductExist = await _product.IsProductExist(ProductCategory.ProductID);
@@ -204,8 +204,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<GalleryDTO>> Post(int ProductID, IFormFile imageFile)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation(message: "POST: api/UploadProductImage");
             // Check if no file is uploaded
@@ -258,8 +258,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put(int id,ProductDTO UpdatedProduct)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-               && (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation("PUT: api/{id}", id);
             if (id < 1 || !ValidateInput(UpdatedProduct))
@@ -296,8 +296,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put(int id, ProductCategoryDTO UpdatedProductCategory)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-               && (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation("PUT: api/{id}/UpdateProductCategories", id);
             bool IsProductExist = await _product.IsProductExist(UpdatedProductCategory.ProductID);
@@ -331,8 +331,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put(int GalleryID, IFormFile imageFile)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-                && (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+                && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation("PUT: api/{id}/UpdateProductImage", GalleryID);
             if (GalleryID <= 0)
@@ -383,8 +383,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-               && (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation("DELETE: api/{id}/DeleteProduct", id);
             
@@ -410,8 +410,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteProductGallery(int GalleryID)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-               && (Global.User.Permission & Permissions.StockManager) != Permissions.StockManager)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
                 return Unauthorized();
             _logger.LogInformation("DELETE: api/{id}/DeleteProductGallery", GalleryID);
             if (GalleryID < 1)

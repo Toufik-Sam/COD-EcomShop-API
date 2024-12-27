@@ -7,6 +7,7 @@ using EcomDataAccess.OrdersData.OrderItems;
 using EcomDataAccess.OrdersData.OrderStatus;
 using EcommerceAppAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Security;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,13 +21,15 @@ namespace EcommerceAppAPI.Controllers
         private readonly IOrder _order;
         private readonly ICustomer _customer;
         private readonly IProduct _product;
+        private readonly IUserService _global;
 
-        public OrdersController(ILogger<OrdersController>logger,IOrder order,ICustomer customer,IProduct product)
+        public OrdersController(ILogger<OrdersController>logger,IOrder order,ICustomer customer,IProduct product,IUserService global)
         {
             this._logger = logger;
             this._order = order;
             this._customer = customer;
             this._product = product;
+            this._global = global;
         }
 
         // GET: api/<OrdersController>
@@ -35,9 +38,9 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<OrderDTO>>> GetAllCustomerOrders(int CustomerID)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger && 
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger && 
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/AllCustomerOrders");
             try
@@ -56,9 +59,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpGet("{id}/CustomerOrderByID",Name = "CustomerOrderByID")]
         public async Task<ActionResult<OrderDTO>> GetCustomerOrderByID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/{id}/CustomerOrderByID", id);
             if (id < 1)
@@ -80,9 +83,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpGet("{id}/OrderItemByID",Name="OrderItemByID")]
         public async Task<ActionResult<OrderItemDTO>>GetOrderItemByID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation(message: "GET: api/{id}/OrderItemByID", id);
@@ -105,8 +108,8 @@ namespace EcommerceAppAPI.Controllers
         [HttpGet("AllOrderSatatuses", Name = "AllOrderSatatuses")]
         public async Task<ActionResult<OrderDTO>> GetAllOrderSatatuses()
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-               && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/AllOrderSatatuses)");
 
@@ -125,9 +128,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpGet("{id}/OrderStatusByID", Name = "OrderStatusByID")]
         public async Task<ActionResult<OrderDTO>> GetOrderStatusByID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation(message: "GET: api/{id}/OrderStatusByID", id);
@@ -150,9 +153,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpGet("{id}/AllOrderItems", Name = "AllOrderItems")]
         public async Task<ActionResult<OrderDTO>> GetOrderItemsByID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation(message: "GET: api/{id}/AllOrderItems", id);
@@ -176,9 +179,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpPost("AddNewOrder")]
         public async Task<ActionResult<OrderDTO>> Post(OrderDTO orderDTO)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation(message: "POST: api/AddedOrder");
@@ -204,8 +207,8 @@ namespace EcommerceAppAPI.Controllers
         [HttpPost("AddNewOrderStatus")]
         public async Task<ActionResult<OrderStatusDTO>> Post(OrderStatusDTO orderStatusDTO)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-             && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+             && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger)
                 return Unauthorized();
             _logger.LogInformation(message: "POST: api/AddNewOrderStatus");
             if (orderStatusDTO.StatusName == "")
@@ -228,9 +231,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpPost("AddNewOrderItem")]
         public async Task<ActionResult<OrderItemDTO>>Post(OrderItemDTO orderItemDTO)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation(message: "POST: api/AddNewOrderItem");
@@ -257,9 +260,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpPut("{id}/ShipOrder")]
         public async Task<IActionResult> ShipOrder(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("PUT: api/{id}/ShipOrder", id);
@@ -284,9 +287,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpPut("{id}/DeliverOrder")]
         public async Task<IActionResult> DeliverOrder(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("PUT: api/{id}/DeliverOrder", id);
@@ -311,9 +314,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpPut("{id}/ConfirmOrder")]
         public async Task<IActionResult> ConfirmOrder(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("PUT: api/{id}/ConfirmOrder", id);
@@ -338,9 +341,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpPut("{id}/CancelOrder")]
         public async Task<IActionResult> CancelOrder(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("PUT: api/{id}/CancelOrder", id);
@@ -365,9 +368,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpPut("{id}/ReturnOrder")]
         public async Task<IActionResult> ReturnOrder(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("PUT: api/{id}/ReturnOrder", id);
@@ -392,8 +395,8 @@ namespace EcommerceAppAPI.Controllers
         [HttpPut("{id}/UpdateOrderStatus")]
         public async Task<IActionResult>Put(int id, OrderStatusDTO UpdatedOrderStatusDTO)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-               && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger)
                 return Unauthorized();
             _logger.LogInformation("PUT: api/{id}/UpdateOrderStatus", id);
 
@@ -421,9 +424,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpPut("{id}/UpdateOrderItem")]
         public async Task<IActionResult> Put(int id, OrderItemDTO UpdatedorderItemDTO)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("PUT: api/{id}/UpdateOrderItem", id);
@@ -457,9 +460,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpDelete("{id}/DeleteOrderByID")]
         public async Task<IActionResult> DeleteOrderByID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("DELETE: api/{id}/DeleteOrderByID", id);
@@ -483,8 +486,8 @@ namespace EcommerceAppAPI.Controllers
         [HttpDelete("{id}/DeleteOrderStatusByID")]
         public async Task<IActionResult> DeleteOrderStatusByID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-             && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+             && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger)
                 return Unauthorized();
             _logger.LogInformation("DELETE: api/{id}/DeleteOrderStatusByID", id);
             if (id < 1)
@@ -507,9 +510,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpDelete("{id}/DeleteOrderItemID")]
         public async Task<IActionResult> DeleteOrderItemID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin
-              && (Global.User.Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.OrdersManger) != Permissions.OrdersManger &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("DELETE: api/{id}/DeleteOrderItemID", id);

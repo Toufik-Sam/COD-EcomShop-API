@@ -1,12 +1,5 @@
 ﻿using EcomDataAccess.CustomersData;
 using EcomDataAccess.CustomersData.CustomersAddresses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EcomBusinessLayer.Customers
 {
     public class clsCustomer : ICustomer

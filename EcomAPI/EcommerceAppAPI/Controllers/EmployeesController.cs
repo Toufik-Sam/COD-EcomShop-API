@@ -1,12 +1,10 @@
-﻿using EcomBusinessLayer.Customers;
-using EcomBusinessLayer.Employees;
+﻿using EcomBusinessLayer.Employees;
 using EcomDataAccess;
 using EcomDataAccess.EmployeesData;
 using EcommerceAppAPI.Models;
 using EcommerceAppAPI.Utility;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,11 +16,13 @@ namespace EcommerceAppAPI.Controllers
     {
         private readonly IEmployee _employee;
         private readonly ILogger<EmployeesController> _logger;
+        private readonly IUserService _global;
 
-        public EmployeesController(IEmployee employee,ILogger<EmployeesController>logger)
+        public EmployeesController(IEmployee employee,ILogger<EmployeesController>logger,IUserService global)
         {
             this._employee = employee;
             this._logger = logger;
+            this._global = global;
         }
         // GET: api/<EmployeesController>
         [HttpGet("AllEmployess")]
@@ -30,7 +30,7 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<EmployeeDTO>>>Get()
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/AllCustomers");
             try
@@ -52,7 +52,7 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<EmployeeDTO>> GetÊmployeeByID(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin)
                 return Unauthorized();
             _logger.LogInformation(message: "GET: api/{id}/EmployeeByID", id);
             if (id < 1)
@@ -77,7 +77,7 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<EmployeeDTO>> Post(FullEmployeeDTO employee)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin)
                 return Unauthorized();
             _logger.LogInformation(message: "POST: api/AddCustomer");
             if (!ValidateInput(employee))
@@ -103,7 +103,7 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put(int id, EmployeeDTO Updatedemployee)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin)
                 return Unauthorized();
             _logger.LogInformation("PUT: api/{id}/UpdateEmployee", id);
             if (id < 1 || !ValidateInput(Updatedemployee))
@@ -136,8 +136,8 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put(int id, string CurrentPassword, string NewPassword)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin &&
-              (Global.User.Permission & Permissions.Customer) != Permissions.Customer)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
+              (_global.GetUser().Permission & Permissions.Customer) != Permissions.Customer)
                 return Unauthorized();
 
             _logger.LogInformation("PUT: api/{id}/UpdatEmployeePassword", id);
@@ -167,7 +167,7 @@ namespace EcommerceAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int id)
         {
-            if ((Global.User.Permission & Permissions.Addmin) != Permissions.Addmin)
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin)
                 return Unauthorized();
             _logger.LogInformation("DELETE: api/{id}/DeleteEmployee", id);
             if (id < 1)
