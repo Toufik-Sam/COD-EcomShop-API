@@ -1,7 +1,9 @@
 ﻿using EcomBusinessLayer.Suppliers;
 using EcomBusinessLayer.Suppliers.ProductSuppliers;
+using EcomDataAccess;
 using EcomDataAccess.SupplierData;
 using EcomDataAccess.SupplierData.ProductSupplierData;
+using EcommerceAppAPI.Models;
 using EcommerceAppAPI.Utility;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,15 +17,19 @@ namespace EcommerceAppAPI.Controllers
         private readonly ISupplier _supplier;
         private readonly IProductSupplier _productSupplier;
         private readonly ILogger<SuppliersController> _logger;
+        private readonly IUserService _global;
 
-        public SuppliersController(ISupplier supplier,IProductSupplier productSupplier,ILogger<SuppliersController> logger)
+        public SuppliersController(ISupplier supplier,IProductSupplier productSupplier,ILogger<SuppliersController> logger,IUserService global)
         {
             this._supplier = supplier;
             this._productSupplier = productSupplier;
             this._logger = logger;
+            this._global = global;
         }
         // GET: api/<SuppliersController>
         [HttpGet("AllSuplliers")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<SupplierDTO>>>GetAllSupplier()
         {
             _logger.LogInformation(message: "GET:api/AllSuppliers");
@@ -42,6 +48,9 @@ namespace EcommerceAppAPI.Controllers
         [HttpGet("AllProductSuplliers")]
         public async Task<ActionResult<IList<ProductSupplierDTO>>> GetAllProductSupplier(int ProductID)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET:api/AllProductSuplliers");
             if (ProductID < 1)
                 return BadRequest("Invalid Data!");
@@ -59,8 +68,14 @@ namespace EcommerceAppAPI.Controllers
 
         // GET api/<SuppliersController>/5
         [HttpGet("{id}/SupplierBytID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<SupplierDTO>>GetSupplierByID(int id)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET: api/{id}/SupplierByID", id);
             if (id < 1)
                 return BadRequest($"Not Accepted ID {id}");
@@ -80,8 +95,13 @@ namespace EcommerceAppAPI.Controllers
 
         // POST api/<SuppliersController>
         [HttpPost("AddNewSupplier")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<SupplierDTO>> AddNewSupplier([FromBody] SupplierDTO newsupplierDTO)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
+                return Unauthorized();
             _logger.LogInformation(message: "POST api/AddNewSupplier");
             if (!ValidateInput(newsupplierDTO))
                 return BadRequest("Invalid Data !");
@@ -101,8 +121,13 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpPost("AddNewProductSupplier")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ProductSupplierDTO>> AddNewProductSupplier([FromBody] ProductSupplierDTO newproductsupplierDTO)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
+                return Unauthorized();
             _logger.LogInformation(message: "POST api/AddNewProductSupplier");
             if (newproductsupplierDTO.ProductID<1 || newproductsupplierDTO.SupplierID<1)
                 return BadRequest("Invalid Data !");
@@ -123,8 +148,14 @@ namespace EcommerceAppAPI.Controllers
 
         // PUT api/<SuppliersController>/5
         [HttpPut("{id}/UpdateSupplier")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateSupplier(int id, [FromBody] SupplierDTO supplierDTO)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
+                return Unauthorized();
             _logger.LogInformation(message: "POST: api/UpdateSupplier");
             bool flag = await _supplier.IsSupplierExist(id);
             if (id < 1 || ValidateInput(supplierDTO))
@@ -151,8 +182,14 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpPut("{id}/UpdateProductSupplier")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateProductSupplier(int id, [FromBody] ProductSupplierDTO productSupplierDTO)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
+                return Unauthorized();
             _logger.LogInformation(message: $"PUT: api/{id}/UpdateProductSupplier");
             bool flag = await _productSupplier.IsProductSupplierExist(id);
             if (id < 1 || productSupplierDTO.ProductID<1 || productSupplierDTO.SupplierID<1)
@@ -179,8 +216,13 @@ namespace EcommerceAppAPI.Controllers
 
         // DELETE api/<SuppliersController>/5
         [HttpDelete("{id}/DeleteSupplier")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int id)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+                 && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
+                return Unauthorized();
             _logger.LogInformation("DELETE: api/{id}/DeleteSupplier", id);
             if (id < 1)
                 return BadRequest($"Not Accepted ID {id}");
@@ -200,8 +242,13 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpDelete("{id}/DeleteProductSupplier")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteProductSupplier(int id)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.StockManager) != Permissions.StockManager)
+                return Unauthorized();
             _logger.LogInformation("DELETE: api/{id}/DeleteProductSupplier", id);
             if (id < 1)
                 return BadRequest($"Not Accepted ID {id}");

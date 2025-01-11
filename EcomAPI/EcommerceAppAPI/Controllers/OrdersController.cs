@@ -57,6 +57,8 @@ namespace EcommerceAppAPI.Controllers
 
         // GET api/<OrdersController>/5
         [HttpGet("{id}/CustomerOrderByID",Name = "CustomerOrderByID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<OrderDTO>> GetCustomerOrderByID(int id)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -81,6 +83,9 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("{id}/OrderItemByID",Name="OrderItemByID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<OrderItemDTO>>GetOrderItemByID(int id)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -106,6 +111,8 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("AllOrderSatatuses", Name = "AllOrderSatatuses")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<OrderDTO>> GetAllOrderSatatuses()
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -126,6 +133,9 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("{id}/OrderStatusByID", Name = "OrderStatusByID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<OrderDTO>> GetOrderStatusByID(int id)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -151,6 +161,8 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("{id}/AllOrderItems", Name = "AllOrderItems")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<OrderDTO>> GetOrderItemsByID(int id)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -177,6 +189,8 @@ namespace EcommerceAppAPI.Controllers
 
         // POST api/<OrdersController>
         [HttpPost("AddNewOrder")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<OrderDTO>> Post(OrderDTO orderDTO)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -205,6 +219,8 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpPost("AddNewOrderStatus")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<OrderStatusDTO>> Post(OrderStatusDTO orderStatusDTO)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -229,6 +245,8 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpPost("AddNewOrderItem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<OrderItemDTO>>Post(OrderItemDTO orderItemDTO)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -258,6 +276,8 @@ namespace EcommerceAppAPI.Controllers
 
         // PUT api/<OrdersController>/5
         [HttpPut("{id}/ShipOrder")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ShipOrder(int id)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -285,6 +305,8 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpPut("{id}/DeliverOrder")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeliverOrder(int id)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -312,6 +334,8 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpPut("{id}/ConfirmOrder")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ConfirmOrder(int id)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -339,6 +363,8 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpPut("{id}/CancelOrder")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CancelOrder(int id)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -366,6 +392,8 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpPut("{id}/ReturnOrder")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ReturnOrder(int id)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -393,6 +421,8 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpPut("{id}/UpdateOrderStatus")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult>Put(int id, OrderStatusDTO UpdatedOrderStatusDTO)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -422,6 +452,8 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpPut("{id}/UpdateOrderItem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put(int id, OrderItemDTO UpdatedorderItemDTO)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -458,6 +490,8 @@ namespace EcommerceAppAPI.Controllers
 
         // DELETE api/<OrdersController>/5
         [HttpDelete("{id}/DeleteOrderByID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteOrderByID(int id)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -484,6 +518,8 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpDelete("{id}/DeleteOrderStatusByID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteOrderStatusByID(int id)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
@@ -508,6 +544,8 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpDelete("{id}/DeleteOrderItemID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteOrderItemID(int id)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin

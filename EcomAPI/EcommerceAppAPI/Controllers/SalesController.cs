@@ -1,6 +1,8 @@
 ﻿using EcomBusinessLayer.Orders;
 using EcomBusinessLayer.Sales;
+using EcomDataAccess;
 using EcomDataAccess.SalesData;
+using EcommerceAppAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceAppAPI.Controllers
@@ -12,16 +14,23 @@ namespace EcommerceAppAPI.Controllers
         private readonly ISale _sale;
         private readonly IOrder _order;
         private readonly ILogger<SalesController> _logger;
+        private readonly IUserService _global;
 
-        public SalesController(ISale sale,IOrder order,ILogger<SalesController>logger)
+        public SalesController(ISale sale,IOrder order,ILogger<SalesController>logger, IUserService global)
         {
             this._sale = sale;
             this._order = order;
             this._logger = logger;
+            this._global = global;
         }
         [HttpGet("AllSales")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<SaleDTO>>>GetAllSales()
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+                && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET: api/AllSales");
             try
             {
@@ -36,8 +45,13 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("AllFullSales")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<FullSaleDTO>>> GetAllFullSales()
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET: api/AllSales");
             try
             {
@@ -52,8 +66,13 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("{id}/SaleByID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<SaleDTO>>GetSaleByID(int id)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+             && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET: api/{id}/SaleByID", id);
             if (id < 1)
                 return BadRequest($"Not Accepted ID {id}");
@@ -72,8 +91,13 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("{id}/FullSaleByID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<SaleDTO>> GetFullSaleByID(int id)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET: api/{id}/FullSaleByID", id);
             if (id < 1)
                 return BadRequest($"Not Accepted ID {id}");
@@ -92,8 +116,13 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpPost("AddNewSale")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<SaleDTO>>AddNewSale(SaleDTO newSale)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+                && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "POST: api/AddNewSale");
             bool flag = await _order.IsOrderExist(newSale.OrderID);
             if (newSale.Amount<=0 || !flag)
@@ -114,8 +143,13 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpPut("{id}/UpdateSale")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult>UpdateSale(int id, SaleDTO UpdatedSale)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "POST: api/UpdateSale");
             bool flag = await _order.IsOrderExist(UpdatedSale.OrderID);
             if (id < 1 || UpdatedSale.Amount<=0 || !flag)
@@ -141,8 +175,13 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpDelete("{id}/DeleteSale")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteSale(int id)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation("DELETE: api/{id}/DeleteSale", id);
             if (id < 1)
                 return BadRequest($"Not Accepted ID {id}");
