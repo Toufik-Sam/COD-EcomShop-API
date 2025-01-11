@@ -182,6 +182,8 @@ namespace EcommerceAppAPI.Controllers
 
         // PUT api/<CardsController>/5
         [HttpPut("{id}/UpdateCart")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put(int id, CartDTO UpdatedCart)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&
@@ -211,6 +213,9 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpPut("{id}/UpdateCartItem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Put(int id, CartItemDTO UpdatedCartItem)
         {
             if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin &&

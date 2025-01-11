@@ -1,9 +1,11 @@
 ﻿using EcomBusinessLayer.Sales.SalesDetails;
 using EcomBusinessLayer.Sales.SalesDetails.CustomerBehavior;
 using EcomBusinessLayer.Sales.SalesDetails.ProductInsight;
+using EcomDataAccess;
 using EcomDataAccess.SalesData.SalesManagement;
 using EcomDataAccess.SalesData.SalesManagement.CustomerBehavior;
 using EcomDataAccess.SalesData.SalesManagement.ProductInsight;
+using EcommerceAppAPI.Models;
 using EcommerceAppAPI.Utility;
 using Microsoft.AspNetCore.Mvc;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,19 +20,26 @@ namespace EcommerceAppAPI.Controllers
         private readonly ICustomerBehavior _customerBehavior;
         private readonly IProductInsight _productInsight;
         private readonly ILogger<SalesDepartmentController> _logger;
+        private readonly IUserService _global;
 
         public SalesDepartmentController(ISaleManagement saleManagement,ICustomerBehavior customerBehavior,
-            IProductInsight productInsight,ILogger<SalesDepartmentController>logger)
+            IProductInsight productInsight,ILogger<SalesDepartmentController>logger,IUserService global)
         {
             this._saleManagement = saleManagement;
             this._customerBehavior = customerBehavior;
             this._productInsight = productInsight;
             this._logger = logger;
+            this._global = global;
         }
 
         [HttpGet("SalesByRegion")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<SaleByRegionDTO>> GetSaleByRegion([FromQuery] SalesByRegionArgs Args)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+             && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET: api/SalesByRegion");
             if (!clsUtil.ValidateLettersOnly(Args.Country) || !clsUtil.ValidateLettersOnly(Args.City))
                 return BadRequest("Invalid Data");
@@ -47,8 +56,13 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("DaySalesSummary")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<DailySalesSummaryDTO>>GetDailySaleSummary(DateTime date)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET: api/DaySalesSummary");
             try
             {
@@ -63,8 +77,13 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("MonthlySalesTrends")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<MonthlySaleTrendDTO>> GetMonthlySalesTrends(int year,int month)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET: api/MonthlySalesTrends");
             if (year < 1 || month < 1 || month > 12)
                 return BadRequest("Invalid Data");
@@ -81,8 +100,13 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("TopCustomers")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<TopCustomerDTO>>>GetTopCustomers(int Top=-1)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET: api/TopCustomers");
             try
             {
@@ -97,8 +121,13 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("TopCustomersByRange")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<TopCustomerDTO>>>GetTopCustomersByRange(DateTime?StartDate,DateTime?EndDate,int Top=-1)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET: api/TopCustomersByRange");
             if (StartDate == null || EndDate == null)
                 return BadRequest("Inavlid Data!");
@@ -115,9 +144,14 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("CustomerPurchaseHistory")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerPurchaseHistoryDTO>>GetCustomerPurchaseHistory(int CustomerID,DateTime?StartDate,
             DateTime?EndDate)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+               && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET: api/CustomerPurchaseHistory");
             if (CustomerID < 1 || StartDate==null || EndDate==null)
                 return BadRequest("Invalid Data");
@@ -134,8 +168,13 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("ProductsList")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<SoldProductDTO>>>GetSoldProductsList()
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET: api/SoldProductsList");
             try
             {
@@ -150,9 +189,14 @@ namespace EcommerceAppAPI.Controllers
         }
 
         [HttpGet("TopSellingProductsByRange")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<SoldProductDTO>>> GetTopSellingProductsListByDateRange(DateTime?StartDate,DateTime?EndDate,
             int Top=-1)
         {
+            if ((_global.GetUser().Permission & Permissions.Addmin) != Permissions.Addmin
+              && (_global.GetUser().Permission & Permissions.SalesManager) != Permissions.SalesManager)
+                return Unauthorized();
             _logger.LogInformation(message: "GET: api/TopSellingProductsByRange");
             if (StartDate == null || EndDate == null)
                 return BadRequest("Invalid Data!");
